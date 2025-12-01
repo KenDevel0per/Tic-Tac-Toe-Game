@@ -1,1 +1,1 @@
-## [**Tic-Tac-Toe-Game**](http://KenDevel0per.githib.io/Tic-Tac-Toe-Game/)
+## [**Tic-Tac-Toe-Game**](http://KenDevel0per.github.io/Tic-Tac-Toe-Game/)
