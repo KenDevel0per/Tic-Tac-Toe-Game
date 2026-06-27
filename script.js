@@ -34,7 +34,7 @@ function makeMove(index) {
         ctx.fillStyle = '#00ffff';
   }
   if (!board.includes('')) {
-    message.textContent = 'Game over';
+    message.textContent = 'Game over!';
     gameActive = false;
     return;
     ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
