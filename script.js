@@ -13,7 +13,6 @@ for (let i = 0; i < size * size; i++) {
   cell.addEventListener('click', handleCellClick);
   boardElem.appendChild(cell);
 }
-
 function handleCellClick(e) {
   if (!gameActive) return;
   if (currentPlayer!== '❌') return;
@@ -23,7 +22,6 @@ function handleCellClick(e) {
   if (!gameActive) return;
   setTimeout(computerMove, 450);
 }
-
 function makeMove(index) {
   board[index] = currentPlayer;
   boardElem.querySelector(`[data-index='${index}']`).textContent = currentPlayer;
@@ -35,7 +33,6 @@ function makeMove(index) {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#00ffff';
   }
-  
   if (!board.includes('')) {
     message.textContent = 'Game over';
     gameActive = false;
@@ -44,11 +41,9 @@ function makeMove(index) {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#00ffff';
   }
-
   currentPlayer = currentPlayer === '❌'? '⭕️': '❌'
   message.textContent = `Player's turn: ${currentPlayer}`;
 }
-
 function computerMove() {
   if (!gameActive || currentPlayer!== '⭕️') return;
   const freeCells = board.map((val, idx) => (val === ''? idx: null)).filter(idx => idx!== null);
@@ -56,7 +51,6 @@ function computerMove() {
   const randomIndex = freeCells[Math.floor(Math.random() * freeCells.length)];
   makeMove(randomIndex);
 }
-
 function checkWin(index) {
   const row = Math.floor(index / size);
   const col = index % size;
@@ -70,7 +64,6 @@ function checkWin(index) {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#00ffff';
 }
-
 function countInDirection(row, col, deltaRow, deltaCol) {
   let count = 0;
   let r = row;
@@ -91,7 +84,6 @@ function countInDirection(row, col, deltaRow, deltaCol) {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#00ffff';
 }
-
 restartBtn.addEventListener('click', () => {
   board.fill('');
   currentPlayer = '❌';
@@ -115,12 +107,11 @@ message.textContent = `Player's turn: ${currentPlayer}`;
     for (let i = 0; i < columns; i++) {
         drops[i] = Math.random() * canvas.height / fontSize;
     }
-    
     function draw() {
         ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#00ffff';
-        ctx.font = fontSize + 'px KenTopDeveloper, monospace';
+        ctx.font = fontSize + 'px KenDevel0per, monospace';
         for (let i = 0; i < drops.length; i++) {
             const text = chars[Math.floor(Math.random() * chars.length)];
             ctx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -130,14 +121,12 @@ message.textContent = `Player's turn: ${currentPlayer}`;
             drops[i]++;
         }
     }
-    
     setInterval(draw, 30);
     window.addEventListener('resize', () => {
         canvas.width = container.offsetWidth;
         canvas.height = container.offsetHeight;
     });
 }
-
 function addGlitchEffect() {
     const glitchElement = document.querySelector('.glitch');
     if (!glitchElement) return;
@@ -160,7 +149,6 @@ function addGlitchEffect() {
         }
     }, 200);
 }
-
 function typewriterEffect() {
     const features = document.querySelectorAll('.feature-line');
     features.forEach((feature, index) => {
@@ -171,7 +159,6 @@ function typewriterEffect() {
         }, index * 200);
     });
 }
-
 function parallaxScroll() {
 }
 function neonFlicker() {
@@ -187,7 +174,6 @@ function neonFlicker() {
         });
     }, 100);
 }
-
 function createCursorTrail() {
     const trail = [];
     const trailLength = 5;
@@ -217,7 +203,6 @@ function createCursorTrail() {
         }, 100);
     });
 }
-
 function animateOnScroll() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -226,7 +211,6 @@ function animateOnScroll() {
                 entry.target.style.transform = 'translateY(0)';
             }
         });
-        
     }, { threshold: 0.1 });
     document.querySelectorAll('.demo-block, .use-case').forEach(el => {
         el.style.opacity = '0';
@@ -235,7 +219,6 @@ function animateOnScroll() {
         observer.observe(el);
     });
 }
-
 function konamiCode() {
     const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
     let konamiIndex = 0;
@@ -251,7 +234,6 @@ function konamiCode() {
         }
     });
 }
-
 function activateMatrixMode() {
     document.body.style.animation = 'hueRotate 5s infinite';
     document.head.appendChild(style);
@@ -260,7 +242,6 @@ function activateMatrixMode() {
         style.remove();
     }, 5000);
 }
-
 document.addEventListener('DOMContentLoaded', () => {
     createMatrixRain();
     addGlitchEffect();
