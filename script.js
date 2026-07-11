@@ -4,7 +4,7 @@ const boardElem = document.getElementById('board');
 const message = document.getElementById('message');
 const restartBtn = document.getElementById('restart');
 let board = Array(size * size).fill('');
-let currentPlayer = '❌';
+let currentPlayer = '\u{274C}';
 let gameActive = true;
 for (let i = 0; i < size * size; i++) {
   const cell = document.createElement('div');
@@ -15,18 +15,18 @@ for (let i = 0; i < size * size; i++) {
 }
 function handleCellClick(e) {
   if (!gameActive) return;
-  if (currentPlayer!== '❌') return;
+  if (currentPlayer!== '\u{274C}') return;
   const index = +e.target.dataset.index;
   if (board[index]!== '') return;
   makeMove(index);
   if (!gameActive) return;
-  setTimeout(computerMove, 450);
+  setTimeout(computerMove, 400);
 }
 function makeMove(index) {
   board[index] = currentPlayer;
   boardElem.querySelector(`[data-index='${index}']`).textContent = currentPlayer;
   if (checkWin(index)) {
-    message.textContent = `Winner! ${currentPlayer}`;
+    message.textContent = `Winner: ${currentPlayer} !`;
     gameActive = false;
     return;
     ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
@@ -34,22 +34,101 @@ function makeMove(index) {
         ctx.fillStyle = '#00ffff';
   }
   if (!board.includes('')) {
-    message.textContent = 'Game over!';
+    message.textContent = '\u{1F91D} Game over!';
     gameActive = false;
     return;
     ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#00ffff';
   }
-  currentPlayer = currentPlayer === '❌'? '⭕️': '❌'
+  currentPlayer = currentPlayer === '\u{274C}'? '\u{2B55}': '\u{274C}'
   message.textContent = `Player's turn: ${currentPlayer}`;
 }
+function generateWinningLines() {
+  const lines = [];
+  for (let r = 0; r < size; r++) {
+    for (let c = 0; c <= size - winLength; c++) {
+      lines.push(Array.from({ length: winLength }, (_, k) => r * size + (c + k)));
+    }
+  }
+  for (let c = 0; c < size; c++) {
+    for (let r = 0; r <= size - winLength; r++) {
+      lines.push(Array.from({ length: winLength }, (_, k) => (r + k) * size + c));
+    }
+  }
+  for (let r = 0; r <= size - winLength; r++) {
+    for (let c = 0; c <= size - winLength; c++) {
+      lines.push(Array.from({ length: winLength }, (_, k) => (r + k) * size + (c + k)));
+    }
+  }
+  for (let r = 0; r <= size - winLength; r++) {
+    for (let c = winLength - 1; c < size; c++) {
+      lines.push(Array.from({ length: winLength }, (_, k) => (r + k) * size + (c - k)));
+    }
+  }
+  return lines;
+}
+const WINNING_LINES = generateWinningLines();
+function wouldWinAt(index, symbol) {
+  for (const line of WINNING_LINES) {
+    if (!line.includes(index)) continue;
+    if (line.every(cellIdx => (cellIdx === index ? symbol : board[cellIdx]) === symbol)) return true;
+  }
+  return false;
+}
+function evaluateCellForSymbol(index, symbol) {
+  const weight = [1, 10, 100, 1000, 100000];
+  let total = 0;
+  for (const line of WINNING_LINES) {
+    if (!line.includes(index)) continue;
+    let own = 0;
+    let blocked = false;
+    for (const cellIdx of line) {
+      const val = cellIdx === index ? symbol : board[cellIdx];
+      if (val === symbol) own++;
+      else if (val !== '') { blocked = true; break; }
+    }
+    if (!blocked) total += weight[own] ?? 0;
+  }
+  return total;
+}
 function computerMove() {
-  if (!gameActive || currentPlayer!== '⭕️') return;
+  if (!gameActive || currentPlayer!== '\u{2B55}') return;
   const freeCells = board.map((val, idx) => (val === ''? idx: null)).filter(idx => idx!== null);
   if (freeCells.length === 0) return;
-  const randomIndex = freeCells[Math.floor(Math.random() * freeCells.length)];
-  makeMove(randomIndex);
+  const winningMove = freeCells.find(idx => wouldWinAt(idx, '\u{2B55}'));
+  if (winningMove !== undefined) {
+    makeMove(winningMove);
+    return;
+  }
+  const threats = freeCells.filter(idx => wouldWinAt(idx, '\u{274C}'));
+  if (threats.length > 0) {
+    const bestThreat = threats.reduce((best, idx) => {
+      const score = evaluateCellForSymbol(idx, '\u{2B55}') + evaluateCellForSymbol(idx, '\u{274C}');
+      return score > best.score ? { idx, score } : best;
+    }, { idx: threats[0], score: -Infinity });
+    makeMove(bestThreat.idx);
+    return;
+  }
+  const center = (size - 1) / 2;
+  let best = [];
+  let bestScore = -Infinity;
+  for (const idx of freeCells) {
+    const attack = evaluateCellForSymbol(idx, '\u{2B55}');
+    const defense = evaluateCellForSymbol(idx, '\u{274C}');
+    const row = Math.floor(idx / size);
+    const col = idx % size;
+    const centerBonus = -(Math.abs(row - center) + Math.abs(col - center)) * 0.5;
+    const score = attack + defense * 0.9 + centerBonus;
+    if (score > bestScore + 0.001) {
+      bestScore = score;
+      best = [idx];
+    } else if (Math.abs(score - bestScore) <= 0.001) {
+      best.push(idx);
+    }
+  }
+  const chosen = best[Math.floor(Math.random() * best.length)];
+  makeMove(chosen);
 }
 function checkWin(index) {
   const row = Math.floor(index / size);
@@ -86,7 +165,7 @@ function countInDirection(row, col, deltaRow, deltaCol) {
 }
 restartBtn.addEventListener('click', () => {
   board.fill('');
-  currentPlayer = '❌';
+  currentPlayer = '\u{274C}';
   gameActive = true;
   message.textContent = `Player's turn: ${currentPlayer}`;
   boardElem.querySelectorAll('.cell').forEach(cell => (cell.textContent = ''));
@@ -111,7 +190,7 @@ message.textContent = `Player's turn: ${currentPlayer}`;
         ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#00ffff';
-        ctx.font = fontSize + 'px KenDevel0per, monospace';
+        ctx.font = fontSize + 'px KenDeveloper, monospace';
         for (let i = 0; i < drops.length; i++) {
             const text = chars[Math.floor(Math.random() * chars.length)];
             ctx.fillText(text, i * fontSize, drops[i] * fontSize);
