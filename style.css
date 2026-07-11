@@ -67,6 +67,9 @@ body {
 }.cell:hover {
   background: lightgrey;
 }
+.cell {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", sans-serif;
+}
 #message {
   margin-top: 20px;
   font-size: 20px;
@@ -107,7 +110,7 @@ h1 {
     box-sizing: border-box;
 }
 body {
-    font-family: 'KenTopDeveloper', monospace;
+    font-family: 'KenDeveloper', monospace;
     background: var(--dark-bg);
     color: var(--text-white);
     line-height: 1.6;
@@ -115,7 +118,7 @@ body {
     position: relative;
 }
 body::before {
-    content: "";
+    content:'';
     position: fixed;
     top: -50%;
     left: -50%;
@@ -227,7 +230,7 @@ body::before {
     text-align: center;
 }
 .ascii-display {
-    font-family: 'KenTopDeveloper', monospace;
+    font-family: 'KenDeveloper', monospace;
     color: var(--text-primary);
     font-size: clamp(0.4rem, 1.5vw, 0.7rem);
     text-shadow: 0 0 10px var(--neon-cyan);
